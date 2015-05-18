@@ -1,0 +1,41 @@
+ {% extends "layout.html" %}
+ {% block body %}
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                             <div class="alert alert-info" role="alert">{{messages[0]}}</div>
+                        {% endif %}
+                    {% endwith %}
+  <table class="table .table-condensed">
+            <tr>
+                <td>Key Number</td>
+                <td>Taken by</td>
+                <td>Actions</td>
+            </tr>
+
+                {% for key in keys %}
+                <tr>
+                    <td><a href="{{url_for('key_info', id=key.id)}}">{{key.key_number}}</a></td>
+                    {% if key.available %}
+                        <td>------</td>
+                        <td></td>
+                    {% else %}
+                         <td><strong><a href="{{ url_for('profile', id=key.get_latest_transaction().user.id) }}">
+                             {{key.get_latest_transaction().user.name}}</a></strong><br/>
+                             {{key.get_latest_transaction().time_stamp.strftime("%d.%m.%y - %H:%M")}}
+                        </td>
+
+                            <td></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <form  method=post>
+                        <td><input type="submit" value="Take All available key" class="btn btn-success btn-large"></td>
+                    </form>
+                </tr>
+   </table>
+
+ {% endblock %}

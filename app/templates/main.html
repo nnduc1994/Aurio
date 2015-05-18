@@ -1,0 +1,44 @@
+ {% extends "layout.html" %}
+ {% block body %}
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                             <div class="alert alert-info" role="alert">{{messages[0]}}</div>
+                        {% endif %}
+                    {% endwith %}
+  <table class="table .table-condensed">
+            <tr>
+                <td>Key Number</td>
+                <td>Taken by</td>
+                <td>Actions</td>
+            </tr>
+
+                {% for key in keys %}
+                <tr>
+                    <td><a href="{{url_for('key_info', id=key.id)}}">{{key.key_number}}</a></td>
+                    {% if key.available %}
+                        <td>------</td>
+                        <form action = "{{url_for('main', key_id=key.id, act='take')}}" method=post>
+                        <td><input type="submit" value="Take key" class="btn btn-success btn-large"></td>
+                         </form>
+                    {% else %}
+                         <td><strong><a href="{{ url_for('profile', id=key.get_latest_transaction().user.id) }}">
+                             {{key.get_latest_transaction().user.name}}</a></strong><br/>
+                             {{key.get_latest_transaction().time_stamp.strftime("%d.%m.%y - %H:%M")}}
+                        </td>
+                        {% if key.get_latest_transaction().user.id == current_user.id %}
+                            <form action = "{{url_for('main', key_id=key.id, act='release')}}" method=post>
+                                <td><input type="submit" value="Release key" class="btn btn-danger btn-large"></td>
+                             </form>
+                        {% elif current_user.role == 3 %}
+                             <form action = "{{url_for('main', key_id=key.id, act='release')}}" method=post>
+                                <td><input type="submit" value="Release key" class="btn btn-danger btn-large"></td>
+                             </form>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% endif %}
+                </tr>
+                {% endfor %}
+   </table>
+
+ {% endblock %}

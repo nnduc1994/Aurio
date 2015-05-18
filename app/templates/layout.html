@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css"  href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <!---- Import javascript online -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <div class="container" id="main">
+      <div class="navbar navbar-default ">
+          <div class="container">
+              <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#function-collapse">
+                         <span class="sr-only">Toggle navigation</span>
+                          <span class="glyphicon glyphicon-align-justify"></span>
+                     </button>
+
+                      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#user-collapse">
+
+                         <span class="sr-only">Toggle navigation</span>
+                          <span class="glyphicon glyphicon-user" style=""></span>
+
+                     </button>
+             </div>
+
+              <div>
+                  <div class="collapse navbar-collapse" id="function-collapse" style="float:left; width:850px;">
+                    <ul class="nav navbar-nav">
+                         <li class="active"><a  href="/intranet"><span class="glyphicon glyphicon-home"></span>&nbsp; My key</a></li>
+                         <li><a href="/intranet/key_list"><span class="glyphicon glyphicon-list-alt"></span>&nbsp; Key list</a></li>
+                         <li><a href="/intranet/key_in_use"><span class="glyphicon glyphicon-briefcase"></span>&nbsp; Key in use</a></li>
+                        <li><a href="/intranet/company_list"><span class="glyphicon glyphicon-pushpin"></span>&nbsp; Companies list</a></li>
+                         <form class="navbar-form navbar-left" action="{{ url_for('main') }}" role="form" method=post>
+                             <div class="form-group">
+                            {{search_form.hidden_tag()}}
+                            <input name="key_input" class="form-control" style="width:200px;"  placeholder="Enter key number"><br>
+                            </div>
+                            <button type="submit" class="btn btn-default">Search <span class="glyphicon glyphicon-search"></span>
+                            </button>
+
+                        </form>
+                    </ul>
+                  </div> <!-- end div nav for another function -->
+
+                  <div class="collapse navbar-collapse" id="user-collapse" style="float:right; width:200px;">
+                   <ul class="nav navbar-nav pull-right ">
+                         <li class="dropdown">
+                             <a href='/' class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                             <span class="glyphicon glyphicon-user"></span> {{ current_user.name}}  <span class="caret"></span></a>
+                              <ul class="dropdown-menu" role="menu">
+                                    <li><a href="{{url_for('profile', id= current_user.id)}}">My Profile</a></li>
+                                    <li class="divider"></li>
+                                    {% if current_user.role != 1 %}
+                                        <li><a href="{{url_for('create_key')}}">Create Key</a></li>
+                                        <li><a href="{{url_for('create_user')}}">Create User</a></li>
+                                        <li><a href="{{url_for('remove_user')}}">Remove User</a></li>
+                                        <li><a href="/intranet/create_company">Create Company</a></li>
+                                        <li class="divider"></li>
+                                    {% endif %}
+                                    <li><a href="{{url_for('logout')}}">Log out</a></li>
+                              </ul>
+                         </li>
+                    </ul>
+                  </div><!-- end div for user function-->
+
+              </div>
+          </div>
+      </div>
+        <br>
+    {% block body %}{% endblock %}
+        <br><br><br>
+
+        <nav class="navbar navbar-default navbar-fixed-bottom">
+            <div class="container">
+                    <strong>You are login as
+                            {% if current_user.role == 3 %}
+                                Master Admin
+                            {% elif current_user.role == 2 %}
+                                Admin
+                            {% else %}
+                                Normal User
+                            {% endif %}
+                        to " {{current_user.company.name}} "</strong>
+            </div>
+        </nav>
+    </div>
+
+</body>
+<script>
+</script>
+</html>

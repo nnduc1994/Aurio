@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="contain">
+        <h3><i>COMPANY LIST PAGE</i></h3><br>
+        {% for company in list %}
+            <h4>Company name: <strong>{{company.name}}</strong></h4>
+
+        <ul>
+            <li><strong>User name/ Name: </strong></li>
+            {% for user in company.user_list %}
+               <a href="{{url_for('profile', id = user.id)}}"><li>{{user.user_name}} / {{user.name}}</li></a>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </div>
+{% endblock %}

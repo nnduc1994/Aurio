@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5 ">
+                <p><strong>Taken History</strong></p>
+                 <table class="table .table-condensed">
+                <tr>
+                    <td>Key Number</td>
+                    <td>Taken at</td>
+                </tr>
+                     {% for tran in list %}
+                    <tr>
+                        <td><a href="{{url_for('key_info', id = tran.key.id)}}">{{tran.key.key_number}}</a></td>
+                        <td><strong>{{tran.time_stamp.strftime("%d.%m.%y - %H.%M")}}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="col-md-6 col-md-offset-1">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Profile &nbsp;&nbsp;&nbsp;</strong>
+                                {% if current_user.id == user.id or current_user.role == 3 %}
+                                <a class="btn btn-info" href="{{url_for('user_control_panel', user_id = user.id)}}">Edit Profile</a>
+                                {% endif %}
+                            </p>
+                            <p>Name: {{user.name}} </p>
+                            <p>Username : {{user.user_name}}</p>
+                            <p>Company : {{user.company.name}}</p>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

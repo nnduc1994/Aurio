@@ -1,0 +1,28 @@
+ {% extends "layout.html" %}
+ {% block body %}
+    <h3>Remove User Page</h3><br>
+     {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info" role="alert">{{messages[0]}}</div>
+            {% endif %}
+    {% endwith %}
+    <form action="{{ url_for('remove_user') }}" role="form" method=post>
+        {{remove_form.hidden_tag()}}
+        {% if current_user.role == 2 %}
+        <select class="form-control" style="width:200px;" name="selected_user">
+            {% for user in user_list %}
+                <option value="{{user.id}}">{{user.name}}</option>
+            {% endfor %}
+        </select>
+        {% else %}
+         <select class="form-control" style="width:200px;" name="selected_user">
+            {% for user in user_list %}
+                <option value="{{user.id}}">{{user.name}} / {{user.get_company_by_user().name}}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+        <br>
+        <button type="submit" class="btn btn-default">Remove User</button>
+    </form>
+
+ {% endblock %}

@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="container">
+          <table class="table .table-condensed">
+              <tr>
+                  <td>User</td>
+                  <td>Key(s) Taken</td>
+              </tr>
+              {% for user in list %}
+                <tr>
+                    <td><a href="{{url_for('profile', id = user.id)}}">{{user.name}}</a></td>
+                    <td>
+                        {% if user.key_taken_list != [] %}
+                            {% for key in user.key_taken_list %}
+                                {{key.key_number}},
+                            {% endfor %}
+                        {% else %}
+                            ........
+                        {% endif %}
+                    </td>
+                </tr>
+              {% endfor %}
+          </table>
+    </div>
+{% endblock %}

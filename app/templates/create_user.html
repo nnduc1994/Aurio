@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% block body %}
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info" role="alert">{{messages[0]}}</div>
+            {% endif %}
+        {% endwith %}
+        <div class="row">
+        <div class="col-md-6">
+        <form action="{{ url_for('create_user') }}" role="form" method=post>
+            {{create_form.hidden_tag()}}
+            User Name : <input name="user_name" class="form-control" style="width:200px;"  placeholder="Enter user_name"><br>
+            Name : <input name="name" class="form-control" style="width:200px;"  placeholder="Enter name"><br>
+            Password : <input name="password" class="form-control" style="width:200px;"  placeholder="Enter password"><br>
+            {% if current_user.role == 3 %}
+            Company :
+            <select class="form-control" style="width:200px;" name="selected_company">
+                {% for comp in list %}
+                    <option value="{{comp.id}}">{{comp.name}}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+            <br>
+            Role :
+            {{create_form.role}}
+
+            <button type="submit" class="btn btn-default">Create User</button>
+
+        </form>
+            </div>
+            </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,34 @@
+ {% extends "layout.html" %}
+ {% block body %}
+ <div class="contain">
+     <div class="row">
+         <div class="col-md-5 ">
+    <table class="table .table-condensed">
+
+        <h3>Taken history</h3>
+            <tr>
+                <td>Taken by</td>
+                <td>Time</td>
+            </tr>
+
+            {% for trans in list %}
+            <tr>
+                <td><strong>{{trans.user.name}}</strong></td>
+                <td>{{trans.time_stamp.strftime("%d.%m.%y - %H.%M")}}</td>
+            {% endfor %}
+            </tr>
+    </table>
+             </div>
+         <div class="col-md-6 col-md-offset-1">
+             <div class="row">
+                 <div class="col-md-4">
+                     <p><strong>Key Info</strong></p>
+                     <p>Key number: {{key.key_number}} </p>
+                     <p>Company : {{key.company.name}}</p>
+                 </div>
+
+                </div>
+         </div>
+     </div>
+</div>
+ {% endblock %}

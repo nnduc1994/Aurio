@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                             <div class="alert alert-info" role="alert">{{messages[0]}}</div>
+                {% endif %}
+            {% endwith %}
+
+            {% if list == [] %}
+                    <div class="alert alert-info" role="alert">You have no key taken at this moment !</div>
+             {% else %}
+              <table class="table .table-condensed">
+                  <tr>
+                      <td>Key number</td>
+                      <td>Taken by</td>
+                      <td>Action</td>
+                  </tr>
+
+                  {% for tran in list %}
+                     <tr>
+                         <td><a href="{{url_for('key_info', id=tran.key.id)}}">{{tran.key.key_number}}</a></td>
+                         <td>
+                             <strong><a href="{{url_for('profile', id=tran.user.id)}}">{{tran.user.name}}</a></strong><br>
+                             {{tran.time_stamp.strftime("%d.%m.%y - %H:%M")}}
+                         </td>
+                            <form action = "{{url_for('my_key', key_id=tran.key.id, act='release')}}" method=post>
+                                <td><input type="submit" value="Release key" class="btn btn-danger btn-large"></td>
+                             </form>
+                     </tr>
+                  {% endfor %}
+                  <tr>
+                      <td></td>
+                      <td></td>
+                          <form action = "{{url_for('my_key', key_id=0, act='all')}}" method=post>
+                                <td><input type="submit" value="Release ALL keys" class="btn btn-danger btn-large"></td>
+                          </form>
+                  </tr>
+              </table>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
