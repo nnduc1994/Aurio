@@ -23,7 +23,7 @@ def login():
         if user is None:
             flash("Username not found")
             return render_template('log_in.html', form=form)
-        if user.password != form.password.data:
+        if user.check_password(form.password.data) == False:
             flash("Password did not match")
             return render_template('log_in.html', form=form)
         if user.activate == False:
@@ -298,11 +298,20 @@ def user_control_panel(user_id):
     query_user = user_obj.query.get(user_id)
     if request.method == "POST":
         query_user.name = create_form.name.data
-        query_user.password = create_form.password.data
+        print(create_form.role.data)
+
+        if create_form.password.data == "":
+            query_user.password = query_user.password
+        else:
+            query_user.password = create_form.password.data
+            query_user.hash_password()
         if query_user.role == 3:
             query_user.role = 3
         else:
-            query_user.role = int(create_form.role.data)
+            if create_form.role.data != 'None':
+                query_user.role = int(create_form.role.data)
+            else:
+                query_user.role = query_user.role
         db.session.add(query_user)
         db.session.commit()
         flash("User Info Updated")

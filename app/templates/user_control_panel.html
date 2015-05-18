@@ -3,10 +3,14 @@
     <form action="{{url_for('user_control_panel', user_id = user.id)}}" role="form" method=post>
         {{create_form.hidden_tag()}}
         Name : <input name="name" class="form-control" style="width:200px;"  value="{{user.name}}"><br>
-        Password : <input name="password" class="form-control" style="width:200px;"  value="{{user.password}}"><br>
+        New Password :
+        <div class="well" style="width:200px;">
+        if you don't want to change the password, just leave this empty
+        </div>
+            <input name="password" class="form-control" style="width:200px;" ><br>
         {% if current_user.role != 1 %}
          {% if current_user.role == 3 and current_user.id == user.id%}
-            <div class="well" style="width:300px;">
+            <div class="well" style="width:200px;">
                 <strong>Note:</strong> if you see this note, that mean you are logging as master admin
                 and trying to update your info.<br> You could leave the select role empty if you still want to be a master admin.
                 Otherwise, you could choose a suitable role below!

@@ -107,8 +107,7 @@ class User(db.Model):
         self.password = generate_password_hash(self.password)
 
     def check_password(self, input_password):
-        hash_input_password = generate_password_hash(input_password)
-        return check_password_hash(hash_input_password, self.password)
+        return check_password_hash(self.password, input_password)
 
     # API function #
     def serialize(self):
