@@ -142,7 +142,7 @@ class Key(db.Model):
             return key_list
 
     def get_key_by_key_number(self, key_number):
-        key = Key.query.filter(Key.key_number == key_number).first()
+        key = Key.query.filter(Key.key_number == key_number).all()
         if key is not None:
             return key
 

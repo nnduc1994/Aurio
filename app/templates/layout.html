@@ -32,12 +32,12 @@
              </div>
 
               <div>
-                  <div class="collapse navbar-collapse" id="function-collapse" style="float:left; width:850px;">
+                  <div class="collapse navbar-collapse" id="function-collapse" style="float:left; width:850px;" >
                     <ul class="nav navbar-nav">
-                         <li class="active"><a  href="/intranet"><span class="glyphicon glyphicon-home"></span>&nbsp; My key</a></li>
-                         <li><a href="/intranet/key_list"><span class="glyphicon glyphicon-list-alt"></span>&nbsp; Key list</a></li>
-                         <li><a href="/intranet/key_in_use"><span class="glyphicon glyphicon-briefcase"></span>&nbsp; Key in use</a></li>
-                        <li><a href="/intranet/company_list"><span class="glyphicon glyphicon-pushpin"></span>&nbsp; Companies list</a></li>
+                         <li {% if request.path == '/intranet' %}class="active"{% endif %}><a  href="/intranet"><span class="glyphicon glyphicon-home"></span>&nbsp; My key</a></li>
+                         <li {% if request.path == '/intranet/key_list' %}class="active"{% endif %}><a href="/intranet/key_list"><span class="glyphicon glyphicon-list-alt"></span>&nbsp; Key list</a></li>
+                         <li {% if request.path == '/intranet/key_in_use' %}class="active"{% endif %}><a href="/intranet/key_in_use"><span class="glyphicon glyphicon-briefcase"></span>&nbsp; Key in use</a></li>
+                         <li {% if request.path == '/intranet/company_list' %}class="active"{% endif %}><a href="/intranet/company_list"><span class="glyphicon glyphicon-pushpin"></span>&nbsp; Companies list</a></li>
                          <form class="navbar-form navbar-left" action="{{ url_for('main') }}" role="form" method=post>
                              <div class="form-group">
                             {{search_form.hidden_tag()}}
@@ -94,6 +94,4 @@
     </div>
 
 </body>
-<script>
-</script>
 </html>

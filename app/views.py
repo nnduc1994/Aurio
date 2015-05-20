@@ -4,6 +4,7 @@ from models import User, Key, Transaction, Company
 from forms import LoginForm, CreateKeyForm, SearchForm, CreateCompanyForm, CreateUserForm, RemoveUserForm
 from flask_login import login_user, login_required, logout_user, current_user
 import datetime
+from datetime import timedelta
 
 
 
@@ -61,7 +62,7 @@ def main(key_id=0, act=""):
             selected_key = key_obj.query.get(key_id)
             selected_key.available = False
             db.session.add(selected_key)
-            new_transaction = Transaction(user=current_user, key_id=key_id, time_stamp=datetime.datetime.now())
+            new_transaction = Transaction(user=current_user, key_id=key_id, time_stamp=datetime.datetime.now() + timedelta(hours=3))
             db.session.add(new_transaction)
             db.session.commit()
             flash("Key Taken")
@@ -109,6 +110,10 @@ def create_key():
     form = CreateKeyForm()
     search_form = SearchForm()
     company_list = current_user.list_all_company()
+    # Remove Aurio Head company from the list
+    for company in company_list:
+        if company.name == "Aurio Head":
+            company_list.remove(company)
     if request.method == "POST":
         key_obj = Key()
         key_obj.key_number = int(form.key_number.data)
@@ -118,15 +123,11 @@ def create_key():
             key_obj.company_id = int(form.selected_company.data)
         elif current_user.role == 2:
             key_obj.company_id = current_user.company_id
-        check_list_key_number = []
-        for key in check_list:
-            check_list_key_number.append(key.key_number)
-        if key_obj.key_number not in check_list_key_number:
-            db.session.add(key_obj)
-            db.session.commit()
-            flash("Key have been created")
-        else:
-            flash("Key number is duplicated")
+
+        db.session.add(key_obj)
+        db.session.commit()
+        flash("Key have been created")
+
         return render_template("create_key.html", form=form, search_form=search_form, list=company_list)
     else:
         if current_user.role == 1:
@@ -172,19 +173,21 @@ def search(input=""):
     if "," in input:
         key_number_list = input.split(",")
         for num in key_number_list:
-            key = key_obj.get_key_by_key_number(int(num))
-            if key is not None:
+            key_list = key_obj.get_key_by_key_number(int(num))
+            for key in key_list:
                 keys.append(key)
     else:
         key = key_obj.get_key_by_key_number(int(input))
-        keys.append(key)
+        for k in key:
+            keys.append(k)
+
     if request.method == "POST":
         for key in keys:
             if key.available == True:
                 selected_key = key_obj.query.get(key.id)
                 selected_key.available = False
                 db.session.add(selected_key)
-                new_transaction = Transaction(user=current_user, key_id=key.id, time_stamp=datetime.datetime.now())
+                new_transaction = Transaction(user=current_user, key_id=key.id, time_stamp=datetime.datetime.now() + timedelta(hours=3))
                 db.session.add(new_transaction)
                 db.session.commit()
         flash("ALL keys taken")
@@ -236,6 +239,12 @@ def company_list():
 def create_user():
     search_form = SearchForm()
     company_list = current_user.list_all_company()
+
+    # Remove Aurio Head company from the list
+    for company in company_list:
+        if company.name == "Aurio Head":
+            company_list.remove(company)
+
     create_form = CreateUserForm()
     if request.method == "POST":
         user_obj = User()
@@ -331,6 +340,8 @@ def user_control_panel(user_id):
                                create_form=create_form)
 
 
+
+
 ######### API ##################
 
 # allow CORS
@@ -351,7 +362,7 @@ def log_in_api(username, password):
     query_user = User.query.filter(User.user_name == username).first()
     if query_user is None:
         return make_response(jsonify({'error': 'User not found'}))
-    if query_user.password != password:
+    if query_user.check_password(password) == False:
         return make_response(jsonify({'error': 'User not found'}))
     serialize_user = query_user.serialize()
     return jsonify({'user': serialize_user})
@@ -365,10 +376,9 @@ def api_get_all_key(userId):
     serialize_key_list = []
     for key in keys:
         last_transaction = key.get_latest_transaction()
-        print last_transaction
         if last_transaction is not None:
             key.last_transaction_name = User.query.get(last_transaction.user_id).name
-            key.last_transaction_time = last_transaction.time_stamp
+            key.last_transaction_time = last_transaction.time_stamp.strftime("%d.%m.%y - %H:%M")
         else:
             key.last_transaction_name = None
             key.last_transaction_time = None
@@ -376,4 +386,4 @@ def api_get_all_key(userId):
         serialize_key_list.append(serialize_key)
 
     return jsonify({'keys': serialize_key_list})
-        
+
