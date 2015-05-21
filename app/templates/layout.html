@@ -60,6 +60,7 @@
                                     <li class="divider"></li>
                                     {% if current_user.role != 1 %}
                                         <li><a href="{{url_for('create_key')}}">Create Key</a></li>
+                                        <li><a href="/intranet/remove_key">Remove Key</a></li>
                                         <li><a href="{{url_for('create_user')}}">Create User</a></li>
                                         <li><a href="{{url_for('remove_user')}}">Remove User</a></li>
                                         <li><a href="/intranet/create_company">Create Company</a></li>

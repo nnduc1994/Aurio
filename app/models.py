@@ -51,8 +51,9 @@ class User(db.Model):
         key_transaction_taken_list = []
         for key in unavailable_keys:
             latest_tran = key.get_latest_transaction()
-            if latest_tran.user_id == self.id:
-                key_transaction_taken_list.append(latest_tran)
+            if latest_tran is not None:
+                if latest_tran.user_id == self.id:
+                    key_transaction_taken_list.append(latest_tran)
         return key_transaction_taken_list
 
     def get_key_in_taken(self):

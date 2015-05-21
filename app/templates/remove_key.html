@@ -1,5 +1,10 @@
 {% extends 'layout.html' %}
 {% block body %}
+  {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                             <div class="alert alert-info" role="alert">{{messages[0]}}</div>
+                        {% endif %}
+ {% endwith %}
     <table class="table .table-condensed">
         <tr>
             <td>Key number</td>
@@ -11,19 +16,20 @@
                 <td>{{key.key_number}}</td>
                 <td>{{key.company_name}}</td>
                 <form action="{{url_for('remove_key', key_id=key.id)}}" method=post>
-                    <td><input type="submit"><span class="glyphicon glyphicon-remove"></span></a></td>
+                    <td><strong><input type="submit" value="X" class="remove"></strong></td>
                 </form>
             </tr>
         {% endfor %}
     </table>
 <style>
-    .glyphicon-remove{
+    .remove{
+        background-color:white;
+        border:none;
         color: red;
-        font-size:150%;
+        font-size: 170%;
     }
-    .glyphicon-remove:hover{
-        font-size:250%;
-        cursor:pointer;
+    .remove:hover{
+        font-size: 250%;
     }
 </style>
 {% endblock %}

@@ -276,6 +276,7 @@ def create_user():
             return render_template("create_user.html", search_form=search_form, create_form=create_form, list=company_list)
 
 @app.route('/intranet/remove_user', methods=['GET', 'POST'])
+@login_required
 def remove_user():
     search_form = SearchForm()
     remove_form = RemoveUserForm()
@@ -300,6 +301,7 @@ def remove_user():
 
 
 @app.route('/intranet/control_panel/<int:user_id>', methods=['GET', 'POST'])
+@login_required
 def user_control_panel(user_id):
     user_obj = User()
     create_form = CreateUserForm()
@@ -339,6 +341,29 @@ def user_control_panel(user_id):
         return render_template('user_control_panel.html', user=query_user, search_form=search_form,
                                create_form=create_form)
 
+
+@app.route('/intranet/remove_key', methods=['GET', 'POST'])
+@app.route('/intranet/remove_key/<int:key_id>', methods=['GET', 'POST'])
+@login_required
+def remove_key(key_id=0):
+    search_form = SearchForm()
+    if request.method == "POST":
+        query_key = Key.query.get(key_id)
+        transaction_list = Transaction.query.filter(Transaction.key_id == key_id).all()
+        for tran in transaction_list:
+            db.session.delete(tran)
+        db.session.delete(query_key)
+        db.session.commit()
+        flash("Remove Key Successful")
+        return redirect(url_for('remove_key'))
+    else:
+        user_obj = User()
+        key_list = user_obj.list_all_key(current_user.role, current_user.company_id)
+        key_list_complete = []
+        for key in key_list:
+            key.company_name = Company.query.get(key.company_id).name
+            key_list_complete.append(key)
+        return render_template("remove_key.html", search_form=search_form, list=key_list_complete)
 
 
 
