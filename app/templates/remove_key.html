@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block body %}
+    <table class="table .table-condensed">
+        <tr>
+            <td>Key number</td>
+            <td>Company</td>
+            <td>Remove</td>
+        </tr>
+        {% for key in list %}
+            <tr>
+                <td>{{key.key_number}}</td>
+                <td>{{key.company_name}}</td>
+                <form action="{{url_for('remove_key', key_id=key.id)}}" method=post>
+                    <td><input type="submit"><span class="glyphicon glyphicon-remove"></span></a></td>
+                </form>
+            </tr>
+        {% endfor %}
+    </table>
+<style>
+    .glyphicon-remove{
+        color: red;
+        font-size:150%;
+    }
+    .glyphicon-remove:hover{
+        font-size:250%;
+        cursor:pointer;
+    }
+</style>
+{% endblock %}
